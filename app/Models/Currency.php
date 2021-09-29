@@ -9,8 +9,8 @@ class Currency extends Model
 {
     use HasFactory;
 
-    public function ratio()
+    public function ratios()
     {
-        return $this->hasOne(CurrencyRatio::class);
+        return $this->hasMany(CurrencyRatio::class);
     }
 }

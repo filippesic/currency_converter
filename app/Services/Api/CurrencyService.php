@@ -72,7 +72,7 @@ class CurrencyService
 
     public function ratioCalculation()
     {
-        $currencies = Currency::with('ratio')->get();
+        $currencies = Currency::with('ratios')->get();
         $response = [];
 
         foreach ($currencies as $currencyOne) {
@@ -83,11 +83,13 @@ class CurrencyService
                 $pairCombo = [$currencyOne->id, $currencyTwo->id];
 
                 if ($currencyOne->base === true) {
-                    $comboRatio = $currencyOne->ratio->ratio;
+                    $comboRatio = $currencyOne->ratios->sortByDesc('api_timestamp')->first()->ratio;
                 } else if (($currencyOne->base && $currencyTwo->base) !== true) {
-                    $comboRatio = (1 / $currencyOne->ratio->ratio) / (1 / $currencyTwo->ratio->ratio);
+                    $comboRatio = (1 / $currencyOne->ratios->sortByDesc('api_timestamp')->first()->ratio)
+                    /
+                    (1 / $currencyTwo->ratios->sortByDesc('api_timestamp')->first()->ratio);
                 } else {
-                    $comboRatio = 1 / $currencyOne->ratio->ratio;
+                    $comboRatio = 1 / $currencyOne->ratios->sortByDesc('api_timestamp')->first()->ratio;
                 }
 
                 array_push($response, ['pair' => $pairCombo, 'ratio' => $comboRatio]);
